@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trading Signal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>   
+    <link rel="stylesheet" href="https://unpkg.com/react-table@latest/react-table.css" />
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">
+        Moving average crossover strategy: Trading Signal
+      </h1><br/>
+      <p class="subtitle">
+        A simple app which uses
+	<a href="https://www.python.org/download/releases/3.0/">Python 3<a>,
+	<a href="http://flask.pocoo.org/">Flask </a>,
+	<a href="https://pandas.pydata.org/" > Pandas </a>, and
+	<a href="https://reactjs.org/" >ReactJS </a> using moving averegae crossover strategy.
+	Read it about 
+	<a href="https://en.wikipedia.org/wiki/Moving_average_crossover"> here </a> and
+	<a href="https://www.investopedia.com/university/movingaverage/movingaverages4.asp"> here </a>. <br/><br/>
+	<span style="1.0rem">
+	  If 'Buy' column is green than it means it's time to buy the security and
+	  if 'Sell' column is red it means it is time to sell.
+	  The data used here is for three year period.
+	  All the rows where they were no 'Buy' or 'Sell' signal was present is left out.
+	  The app is built just for fun and should not be used for making real time trading decision.
+	</span>
+	
+	<div id="macs"></div>
+      </p>
+    </div>
+  </section>
+    <!-- Load React. -->
+  <!-- Note: For Development -->
+    <!--
+    <script src="{{ url_for('static', filename='react.development.js') }}" crossorigin></script>
+    <script src="{{ url_for('static', filename='react-dom.development.js') }}" crossorigin></script>
+    -->
+    <!-- Note: For Production -->
+    <script src="{{ url_for('static', filename='react.production.min.js') }}" crossorigin></script>
+    <script src="{{ url_for('static', filename='react-dom.production.min.js') }}" crossorigin></script>
+    
+    <script src="{{ url_for('static', filename='react-table.min.js') }}"></script>
+    <!-- Load our React component. -->
+    <script src="{{ url_for('static', filename='axios.min.js') }}"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel" src="{{ url_for('static', filename='macs.js') }}"></script>
+  </body>
+</html>
