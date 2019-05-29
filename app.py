@@ -1,8 +1,9 @@
 from flask import Flask,  render_template, url_for, Response
 import pandas as pd
+from flask import jsonify
+from flask import request
 
 app = Flask(__name__)
-
 
 
 @app.route("/msa")
@@ -28,6 +29,21 @@ def moving_average_crossover():
 
     dsec = dummysec[(dummysec['Buy'] != 0.00) | (dummysec['Sell'] != 0.00)]
     result = dsec[['Close Price', 'Date', 'Buy', 'Sell']].to_json(orient='records') 
+    return Response(result, mimetype='application/json')
+
+@app.route('/smadates')
+def get_sma_dates():
+
+    dummysec = pd.read_csv('./dummydatatradesignal.csv')
+    smadates = list(dummysec['date_of_trade'])
+    return jsonify(smadates)
+
+@app.route('/tsbyd2')
+def get_trade_signal_by_date_from_csv():
+    date_of_signal = request.args.get('red')
+    dummysec = pd.read_csv('./dummydatatradesignal.csv')
+    print(dummysec.info())
+    result = dummysec[dummysec['date_of_trade'] == date_of_signal].to_json(orient='records') 
     return Response(result, mimetype='application/json')
 
 @app.route("/")

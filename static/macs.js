@@ -10,25 +10,104 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ReactTable = window.ReactTable.default;
 
-var MovingAverageCrossoverTable = function (_React$Component) {
-	_inherits(MovingAverageCrossoverTable, _React$Component);
+var DateComponent = function (_React$Component) {
+	_inherits(DateComponent, _React$Component);
 
-	function MovingAverageCrossoverTable(props) {
-		_classCallCheck(this, MovingAverageCrossoverTable);
+	function DateComponent(props) {
+		_classCallCheck(this, DateComponent);
 
-		var _this = _possibleConstructorReturn(this, (MovingAverageCrossoverTable.__proto__ || Object.getPrototypeOf(MovingAverageCrossoverTable)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (DateComponent.__proto__ || Object.getPrototypeOf(DateComponent)).call(this, props));
 
-		_this.state = { data: [] };
+		_this.state = { datelist: [] };
+		_this.onDateSelection = _this.onDateSelection.bind(_this);
+
 		return _this;
 	}
 
-	_createClass(MovingAverageCrossoverTable, [{
+	_createClass(DateComponent, [{
+		key: 'onDateSelection',
+		value: function onDateSelection(e) {
+			this.props.onDateSelection(e);
+		}
+	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			var _this2 = this;
 
-			axios.get('/msa').then(function (response) {
+			//bulmaCalendar.attach('[id="my-element"]', options);
+
+			axios.get('/smadates').then(function (response) {
 				_this2.setState({
+					datelist: response.data
+				});
+				_this2.calendars = bulmaCalendar.attach('[type="date"]', { 'type': 'date',
+					'showHeader': 'false',
+					'dateFormat': 'YYYY-MM-DD',
+					// 'enableYearSwitch': false,
+					'minDate': _this2.state.datelist[0],
+					'disabledWeekDays': [0, 6] });
+
+				// Loop on each calendar initialized
+				for (var i = 0; i < _this2.calendars.length; i++) {
+					// Add listener to date:selected event
+					_this2.calendars[i].on('select', function (date) {
+						_this2.onDateSelection(date.data.element.value);
+					});
+				}
+			}).catch(function (error) {
+				// handle error
+				console.log(error);
+			}).finally(function () {
+				// always executed
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+
+			return React.createElement('input', { type: 'date', id: 'my-element', onChange: this.onDateSelection });
+		}
+	}]);
+
+	return DateComponent;
+}(React.Component);
+
+var MovingAverageCrossoverTable = function (_React$Component2) {
+	_inherits(MovingAverageCrossoverTable, _React$Component2);
+
+	function MovingAverageCrossoverTable(props) {
+		_classCallCheck(this, MovingAverageCrossoverTable);
+
+		var _this3 = _possibleConstructorReturn(this, (MovingAverageCrossoverTable.__proto__ || Object.getPrototypeOf(MovingAverageCrossoverTable)).call(this, props));
+
+		_this3.handleDateChange = _this3.handleDateChange.bind(_this3);
+		_this3.state = { data: [] };
+		return _this3;
+	}
+
+	_createClass(MovingAverageCrossoverTable, [{
+		key: 'handleDateChange',
+		value: function handleDateChange(e) {
+			var _this4 = this;
+
+			axios.get('/tsbyd2?red=' + e).then(function (response) {
+				_this4.setState({
+					data: response.data
+				});
+			}).catch(function (error) {
+				// handle error
+				console.log(error);
+			}).finally(function () {
+				// always executed
+			});
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var _this5 = this;
+
+			axios.get('/msa').then(function (response) {
+				_this5.setState({
 					data: response.data
 				});
 			}).catch(function (error) {
@@ -43,7 +122,21 @@ var MovingAverageCrossoverTable = function (_React$Component) {
 		value: function render() {
 			var columns = [{
 				Header: 'Date',
-				accessor: 'Date', // String-based value accessors!
+				accessor: 'date_of_trade', // String-based value accessors!
+				Cell: function Cell(props) {
+					return React.createElement(
+						'div',
+						{ style: { textAlign: 'center' } },
+						React.createElement(
+							'span',
+							null,
+							props.value
+						)
+					);
+				}
+			}, {
+				Header: 'Security Code',
+				accessor: 'sc_code', // String-based value accessors!
 				Cell: function Cell(props) {
 					return React.createElement(
 						'div',
@@ -57,7 +150,7 @@ var MovingAverageCrossoverTable = function (_React$Component) {
 				}
 			}, {
 				Header: 'Close Price',
-				accessor: 'Close Price', // String-based value accessors!
+				accessor: 'close_price', // String-based value accessors!
 				Cell: function Cell(props) {
 					return React.createElement(
 						'div',
@@ -71,7 +164,7 @@ var MovingAverageCrossoverTable = function (_React$Component) {
 				}
 			}, {
 				Header: 'Buy',
-				accessor: 'Buy',
+				accessor: 'buy',
 				width: 200,
 				Cell: function Cell(props) {
 					return React.createElement(
@@ -93,7 +186,7 @@ var MovingAverageCrossoverTable = function (_React$Component) {
 				} // Custom cell components!
 			}, {
 				Header: 'Sell',
-				accessor: 'Sell',
+				accessor: 'sell',
 				width: 200,
 				Cell: function Cell(props) {
 					return React.createElement(
@@ -115,8 +208,16 @@ var MovingAverageCrossoverTable = function (_React$Component) {
 				} // Custom cell components!
 			}];
 
-			return React.createElement(ReactTable, { data: this.state.data, columns: columns,
-				defaultPageSize: 10 });
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(DateComponent, {
+					onDateSelection: this.handleDateChange }),
+				React.createElement(ReactTable, {
+					data: this.state.data,
+					columns: columns,
+					defaultPageSize: 10 })
+			);
 		}
 	}]);
 
