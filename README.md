@@ -16,4 +16,5 @@ A simple project which demos Moving Average Crossover Strategy using reactjs, py
 1. Clone the repository. >   $ git clone https://github.com/phoenix2082/tsignal.git
 2. Switch to directory.  >   $ cd tsignal/
 3. Set flask app var..   >   $ export FLASK_APP=app.py
-4. Run the app.          >.  $ python3 -m flask run    
+4. Run the app.          >   $ python3 -m flask run
+5. Open browser & hit.   >   http://127.0.0.1:5000/
